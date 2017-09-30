@@ -1,0 +1,79 @@
+java为网络支持提供了java.net包，包下的URL和URLConnection等类提供了访问Web服务的功能，URLDecoder和URLEncoder提供了字符串之间相互转换的静态方法。
+
+一、 InetAdderss类
+Java提供了InetAdderss类代表IP地址，InetAdderss下的两个子类：Inet4Address和Inte6Address分别代表IPV4和IPV6地址
+
+InetAdderss没有构造器，可以通过一下静态方法获取InetAdderss实例：
+1.getByName（String host）:根据主机获取InetAdderss对象
+2.getByAddress(byte[] addr):根据原始IP地址获取对应InetAdderss对象
+
+InetAdderss实例对应的IP地址和主机名可通过以下方法获取：
+1.String getCanonicalHostName()：获取IP地址的全限定域名
+2.Strng getHostAddress():返回InetAdderss实例对应的IP地址的字符串
+3.String getHostName():获取IP地址的主机名
+4.getLocalHost():获取本机IP地址对应的InetAdderss实例
+5.isReachable():测试是否可以到达改地址。
+
+
+
+二、URLDecoder和URLEncoder完成字符串转换
+在URL中有中文的情况下，这些关键字会变成“乱码”（现在好像不会了），这些“乱码”就是 applica/x-www-form-urlencoded MIME字符串。
+
+1.URLDecoder 类包含一个decode(String s, string enc)静态方法，可以将乱码字符转换成普通字符串
+2.URLEncoder 类包含一个encode(String s, String enc)静态方法，可以将普通字符串转化成application/x-www-form-urlencoded MIME字符串。
+
+
+三、URL，URLConnection和URLPermission
+URL(Uniform Resourse Locator)统一资源定位器，是指向换联网资源的指针.由协议名、主机、端口和资源组成。
+即：protocal：//host:port/resourceName   如  Shttp://www.baidu.com/index,jsp
+
+JDK 中还提供了一个URI(Uniform Resour Identifiers)类， 实例代表一个统一资源标识符，作用是用来解析.
+
+URL类方法：
+String getFile():获取URL的资源名;
+String getHost():获取URL的主机名;
+String getPath():获取URL的路径;
+int getPort():获取URL的端口号;
+String getProtocal():获取URL的协议名称;
+String getQuery():获取URL的查询字符串部分;
+URLConnection openConnection():返回一个URLConnection对象，代表与URL所引用的远程对象的连接;
+InputStream openStream():打开此URL的连接，并返回一个用于读取该URL资源的InputStream。
+
+Java 8 新增一个URLPermission类，用于管理HttpURLConnection权限问题，如果在HttpURLConnection安装了安全管理器，通过该对象打开连接时需要先获取权限。
+
+通常创建一个和URL的连接，并发送请求。读取URL应用的资源需要如下步骤：
+1.通过调用URL对象的openConnection()方法来创建URLConncetion对象；
+2.设置URLConnection的参数和普通请求属性；
+3.如果只是发送Get方式请求，使用connect()方法建立和远程资源的连接即可，如果发送的是POST请求，需要获取
+URLConnection实例对用的输出流来发送请求参数；
+4.远程资源变为可用，程序可以访问远程资源的头字段或通过输入流来读取远程资源的参数。
+
+
+设置请求头字段的方法：
+1.setAllowUserInteraction():设置该URLConnec的allowUserInteraction请求头字段的值；
+2.setDoInput():设置该URLConnection的doInput请求头字段的值；
+3.setDoOutput():设置该URLConnection的doOutput请求头字段的值；
+4.setIfModifiedSince():设置该URLConnec的ifModifiedSince请求头字段的值；
+5.setUseCaches();设置该URLConnection的useCaches请求头字段的值。
+
+设置或增加通用头字段：
+1.setRequestProperty(String key,String value):设置该URConnection的key请求头字段的之值为value；
+2.addRequestProperty(String key,String value):为URLConnection的key请求头字段增加value值，该方法不会覆盖原请求头字段的值，而是将新值追加到原请求头字段中。
+
+远程资源可用后，可用以下方法访问头字段和内容：
+1.Object getContent():获取URLConnection的内容；
+2.String getHeaderField(String name):获取指定响应头字段的值；
+3.getInputStream():返回URLConnection对应的输入流，用于获取URLConnection响应的内容；
+4.getOutputStream():返回该URLConnection对应的输出流，用于向URLConnection发送请求参数。
+
+
+获取特定响应头字段的值的方法：
+1.getContentEncoding():获取conten-encoding响应头字段的值。
+2.getContentLength():获取content-length响应头字段的值。
+3.getContentType():获取content-type响应头字段的值；
+4.getDate():机票去data响应头字段的值；
+5.getExpiration()；获取expires响应头字段的值。
+6.getLastModified():获取last-modified响应头字段的值。
+
+
+tips:如果既要用输入流读取URLConnection响应的内容，又要使用输出流发送请求参数，一定要先使用输出流，再使用输入流。
