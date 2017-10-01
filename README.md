@@ -1,3 +1,3 @@
 # Java-learning
 
-Related note  in the process of learning Java
+Related notes  in the process of learning Java
