@@ -1,0 +1,81 @@
+传统的IO操作都是通过阻塞的方式处理，并且只能通过字节的移动来处理（即使不是直接处理字节，但是底层还是通过字节的方式）。JDK 1.4 提供了NIO方式，放在java.nio包中
+
+一、NIO
+Channel（通道）和Buffer（缓冲）是NIO中的两个核心对象。
+Channel是对传统输入/输出系统的模拟，在NIO中所有的数据都需要通过通道传输：Channel与传统的InputStream，OutputStream最大区别在于他提供了一个map()方法，通过该方法可以将”一块数据“映射到内存中。传统的IO是面向流的处理，NIO是面向快的处理。
+
+Buffer可以理解为一个容器，本质是一个数组，所有发送到Channel中的而数据都要先放到Buffer中，从Channel中读取数据也要先方法Buffer中。
+
+NIO还提供了将Unicode字符串映射城字节序列以及逆映射操作的Charset类，也提供了支持非阻塞式IO的Selector类。
+
+二、Buffer
+从内部结构上看，Buffer就像是一个数组，可以保存多个类型相同的数据。 Buffer是一个抽象类，最常用子类是ByteBuffer，它可以在底层字节数组上进行get/set操作。其他Buffer类还有：CharBuffer,ShortBuffer,IntBuffer,LongBuffer,FloatBuffer,DoubleBuffer。
+
+可通过如下方法获得一个Buffer对象：
+static XXXBuffer allocate(int capacity):创建一个容量为capacity的XXXBuffer对象。
+
+Buffer中三个重要概念，容量（capacity），界限（limit）和位置（position）。
+1.容量：缓冲区容量表示该Buffer的最大数据容量，不可为负值，创建后不可更改。
+2.界限：第一个不应该被读出或写入的缓冲区位置索引。即位于limit后的数据既不可读也不可写。
+3.位置：指明下一个可以被读出的或者写入的缓冲区位置索引。
+
+除此之外，Buffer中还有个可选标记mark, Buffer允许直接将position定位到mark处；这些值满足：
+0<=mark<=position<=limit<=capacity。
+
+Buffer装入数据步骤：
+1.初始时Buffer的position为0，limit为capacity。程序通过put()方法向Buffer中放入数据，position位置向后移动。
+2.装入数据结束后，调用Buffer 的flip()方法，该方法将limit设置为position所在位置，
+并将position设为0，这样Buffer的读写指针又移动到开始位置。即flip()方法为Buffer输出数据做准备(避免读空值)。
+3.当Buffer输出数据结束后，Buffer又调用clear()方法，它仅仅将position置为0，将limit置为capacity，这样为再次向Buffer中装入数据做准备。
+
+
+通过put()和get()方法访问Buffer中数据时，分为相对和绝对两种。
+相对：从position位置读写数据，然后position值按处理元素个数增加。
+绝对：直接根据索引向Buffer中读写数据，position位置不变。
+
+
+通过allocate()方法创建的Buffer对象时普通的Buffer，ByteBuffer还提供了一个allocateDirect()方法来创建直接Buffer。直接Buffer的创建成本比普通Buffer创建成本高，但是直接Buffer读取效率高。
+
+
+三、Channel
+Channel类似于传统的流对象，但是有以下区别：
+1.Channel可以直接将指定文件的部分或全部直接映射成Buffer。
+2.程序不能直接访问Buffer，必须通过Buffer与其交互。
+
+
+Channel常用三类方法：
+1.map()：用于将Channel对应的部分或全部数据映射成ByteBuffer；
+2.read()和write()：用于读写Buffer中的数据。
+
+
+四。字符集和Charset
+编码：明文的字符序列转换成二进制的字节序列；
+解码：二进制的字节序列转换成铭文的字符序列；
+
+Charset类提供了availableCharset()静态方法来获取当前JDK所支持的所有字符集。
+
+
+五、文件锁
+在FileChannel中提供了lock()/tryLock()方法获得文件锁FileLock对象，从而锁定文件。
+lock()方法是阻塞式，未获得文件锁程序将一直阻塞；tryLock()是尝试锁，未获得返货null。
+1.lock(long postion, long size,boolean shared):从position开始长度为size 的内容加锁。
+2.tyrLock(long postion, long size,boolean shared):如上。
+当参数shared为true时，表示是一个共享锁，它允许多个进程读文件，但阻止其他进程获得该文件的排它锁；当shared为false时，表明是一个排它锁，它将锁定对文件的读写。程序可以通过调用FileLock的isShared判断是否是共享锁。
+
+
+
+
+六、NIO.2
+早起Java只提供File类访问文件系统，但是File 类功能有限，性能不高，而且大部分方法出错仅返回失败，不提供异常信息。
+
+NIO.2引入Path接口，代表一个与平台无关的平台路径。除此还提供了Files和Paths两个工具类。
+
+
+FileVisitor遍历文件和目录：
+http://blog.csdn.net/Lirx_Tech/article/details/51424569
+
+WatchService监控文件变化
+http://blog.csdn.net/Lirx_Tech/article/details/51425364
+
+访问文件属性
+http://blog.csdn.net/Lirx_Tech/article/details/51428238

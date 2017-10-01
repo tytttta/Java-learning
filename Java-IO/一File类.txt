@@ -1,0 +1,24 @@
+java.io包提供了File类操作文件和目录。
+
+一、File类提供了对文件及目录的操作方法：
+http://www.runoob.com/java/java-file.html
+
+
+二、文件过滤器
+File类的list()方法可以接收一个FilenameFilter参数，通过该参数可以只列出符合条件的文件。
+
+FilenameFilter接口包含了一个accept(File dir, String name)方法，该方法依次对指定File的所有子目录或者文件进行迭代。如果返回true，则list()会列出该子目录或者文件。
+
+
+三、RandomAccessFile文件访问类
+RandomAccessFile支持随机访问，可以从文件任意位置读写数据。但是只能读写文件，不能读写其他IO。
+
+RandomAccessFile对象包含了一个记录指针，用来标识当前读写处的位置，当程序创建一个RandomAccessFile对象时，对象的文件记录指针位于文件头。当读写了n个字节后，文件记录指针会向后移动n个字节。除此之外，RandomAccessFile也可以自己移动指针，有以下两个方法：
+1.long getFilePointer():返回文件记录指针的当前位置；
+2.void seek(long pos):将文件指针定位到pos位置。
+
+RandomAccessFile构造器的mode参数：
+1.“r":只读方式； 2."rw":读写方式打开文件，文件如果不存在，则创建文件;
+3."rws":相对"rw",还要求对文件的内容或元数据
+的更新同步写入底层存储设备中。
+4."rwd":相对于"rw"，还要求对文件的内容的更新同步写入底层存储设备中。

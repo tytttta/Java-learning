@@ -1,0 +1,58 @@
+一、对象序列化（Serialize）通过将Java对象转换成二进制流保存在磁盘上或者在网络上传输，以备可以恢复成原来的对象（反序列化Deserialize）。
+
+如果需要让某个类支持序列化，必须让它的类是可序列化的，即实现如下接口之一：
+1.Serializable; 实现接口即可，不需要实现任何方法;
+2.Externaliable
+
+序列化步骤：
+1.类实现Serializable接口；
+2.创建一个ObjectOutputStream处理流；
+3.调用ObjectOutputStream对象的writeObject()方法输出可序列化对象。
+
+反序列化步骤：
+1.创建一个ObjectInputStream输入流；
+2.调用ObjectInputStream对象的readObject()方法读取流中的对象，返回一个Object类型的Java对象；
+
+
+反序列化无须构造器来初始化Java对象。
+
+
+二、对象引用的序列化
+当一个对象中包含了一个对象，只有当被包含的对象可以被序列化时，外部对象才可以被序列化。
+
+当多个对象同时包含某个可序列化对象时，采用以下算法：
+1.所有保存在磁盘的对象都有一个序列化编号；
+2.当程序试图序列化一个对象时，程序先检查对象是否已经被序列化，只有该对象从未被序列化，系统才会将该对象转换成字节序列并输出；
+3.如果某个对象已经被序列化，程序将只是直接输出一个序列化编号，而不重新序列化该对象。
+
+只有第一次调用writeObject()方法来输出对象时才会将对象转换成字节序列并写入ObjectOutputStream中；在后面程序中即使该对象得实例变量发生了改变，再次调用writeObject()方法输出该对象时，改变后的实例变量也不会输出。
+
+
+三、自定义序列化
+递归序列化：对象所引用的对象可以序列化。
+
+自特殊场景下，不希望类中的某个实例变量被序列化，或者不可序列化，因此不希望对该实例变量进行递归序列化，以避免NotSerializableException异常。
+
+通过实例变量前使用transient关键字修饰，可以指定Java序列化时无须理会该实例变量。 transient只能修饰实例变量，不可修饰程序中其他成分。
+
+四、另一种自定义序列化机制
+实现Externalizable接口，实现如下两个方法。
+1.void readExternal(ObjectInput in):需要序列化的类实现readExternal()方法实现发序列化；该方法调用DataInput()(它是ObjectInputde父接口)方法来恢复基本类型的实例变量，调用ObjectInput的readObject()方法恢复应用类型的变量。
+
+2.void writeExternal(ObjectOutput out):需要实例化的类实现writeExternla()方法保存对象的状态。
+
+tips：
+1.对象的类名，实例变量对会被序列化；方法，静态变量，transient实例变量不会被序列化
+2.如果让类中某个实例变量不可序列化一般用transient 不用static。
+3.反序列化对象必须亚欧序列化对象的class文件。
+4.通过文件网络来读取序列化后的对象时，必须按实际写入顺序读取。
+
+
+五、序列化版本
+Java序列化机制允许为序列化提供一个private static final的 serialVersionUID对象，用来标识该Java类的序列化版本。如果一个类升级后，它的serialVersionUID保持不变，序列化机制会将其视为同一个版本。
+
+
+
+
+
+
