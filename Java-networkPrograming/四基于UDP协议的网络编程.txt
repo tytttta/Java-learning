@@ -1,0 +1,27 @@
+UDP是不可靠的网络协议，他在通信两端各建立一个Socket，但是两个Socket之间没有虚拟链路，这两个Socket只是发送和接收数据报的对象。 Java提供了DatagramSocket对象作为基于UDP协议的Socket。
+
+一、使用DatagramSocket发送和接收数据
+构造方法：
+1.DatagramSocket();2.DatagramSocket(int port);3.DatagramSocket(int port, InetAddress laddr)。
+
+接收和发送数据：
+1.receive(DatagramPacket p):从DatagramSocket中接收数据报；
+2.send(DatagramPacket p)：以该DatagramSocket对象向外发送数据报。
+使用DatagramSocket发送数据报时，DatagramSocket本身不知道将数据报发送到哪去，而是由DatagramPacket自身决定数据报的目的地。
+
+DatagramPacket的构造器：
+1.DatagramPacket(byte[] buf,int length):以一个空数组来创建DatagramPacket对象，该对象作用是接收Datagrams中的数据。
+2.DatagramPacket(byte[]buf, int length,InetAddress addr, int port):以一个包含数据的数组来创建DatagramPacket对象，创建该DatagramPacket对象时还指定了IP地址和端口，这决定了数据报的目的地。
+3.DatagramPacket(byte[]buf, int offset,int length):以一个空数组来创建Datagram对象，并指定接收到的数据放入buf数组中从offset开始，最多放length个字节。
+4.Datagramp(byte []buf, int offset, int length, InetAddress address, int port):创建一个用于发送DatagramP对象，指定发送buf数组从offset开始，共length个字节。
+
+DatagramPacket方法获得发送者的IP地址和端口：
+1.InetAddress getAddress():当发送数据报时，返回数据报的目标机器IP地址；
+当接收数据报时，返回数据报的发送主机的IP地址；
+2.int getPort():当发送数据报时，返回数据报的目标机器端口；
+当接收数据报时，返回数据报的发送主机的端口；
+3.SocketAddress getSocketAddress():当发送数据报时，返回数据报的目标机器SocketAddress；
+当接收数据报时，返回数据报的发送主机的SocketAddress；
+
+二、MulticastSocket实现多点广播
+

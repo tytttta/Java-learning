@@ -28,4 +28,15 @@ Socket超时时长：
 1.setSoTimeout(int timeout):当网络连接读取操作超过时长时，系统认为操作失败，抛出SocketTimeoutException。
 2.connect(InetAddress add, int time):指定时间后，如果socket还未连接到远程服务器，系统判定socket连接超时。
 
+三、半关闭Socket
+IO中表示输出已经结束，可以通过关闭输出流来实现，但在网络通信中，关闭输出流时，该输出流对应的Socket也会随之关闭。
+
+Socket半关闭方法，只关闭Socket的输入流或者输出流，用来表示输出数据已经发送完成。
+1.shutdownInput():关闭该Socket的输入流，程序还可以通过Socket的输出流输出数据；
+2.shutdownOutput():关闭Socket的输出流，程序可以通过Socket的输入流读取数据。
+Socket可用过isInputShutdown()方法判断是否处于半读状态，通过isOutputShutdown()判断是否处于半写状态。
+
+
+
+
 

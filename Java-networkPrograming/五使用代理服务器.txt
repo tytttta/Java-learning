@@ -1,0 +1,22 @@
+代理服务器是位于浏览器和服务器之间的一台服务器，设置代理服务器后，浏览器不再向服务器发送请求，而是向代理服务器发送请求，由代理服务器向真正的Web服务器发送请求，并取回信息返回给浏览器。代理服务器有如下好处：
+1.突破自身IP限制，
+2提高访问速度，代理服务器提供的缓冲功能可以避免每个用户都直接访问远程主机，从而提供客户端访问速度。
+
+Java提供了Proxy和ProxySelector两个类。Proxy代表一个代理服务器，可以在打开URLConnection连接时指定Proxy，ProxySelector代表一个代理选择器。可以对HTTP,HTTPS,FTP,SOCKS等分别设置。
+
+
+一、使用Proxy创建连接
+Proxy构造器：
+Proxy(Proxy.Type type, SocketAddress sa):sa表示代理服务器的地址，type表示代理服务器的类型，有如下三种：
+1.Proxy.Type.DIRECT:表示直接连接，不使用代理；
+2.Proxy.Type.HTTP:表示支持高级协议代理，如HTTP或FTP
+3.Proxy.Type.SOCKS：表示SOCK代理。
+
+一旦创建了Proxy对象，程序就可以在使用URLConnection打开连接时，或者创建Socket连接时传一个Proxy对象。
+
+
+二、使用ProxySelector自动选择代理服务器
+使用Proxy对象打开连接时需要显示设置代理服务器，如果希望每次打开可以有默认代理服务器，可以借助ProxySelector实现。
+ProxySelector是一个抽象类，需要定义一个继承ProxySelector的类，并实现下两个抽象方法：
+1.List<Proxy> select(URI uri):根据业务返回代理服务器列表，如果返回的集合中只包含一个Proxy，则该Proxy是默认代理服务器。
+2.connectFailed(URI uri, SocketAddress sa, IOException ios):连接代理服务器失败时回调该方法。
