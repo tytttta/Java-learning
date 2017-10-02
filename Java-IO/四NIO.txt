@@ -37,7 +37,7 @@ Buffer装入数据步骤：
 通过allocate()方法创建的Buffer对象时普通的Buffer，ByteBuffer还提供了一个allocateDirect()方法来创建直接Buffer。直接Buffer的创建成本比普通Buffer创建成本高，但是直接Buffer读取效率高。
 
 
-三、Channel
+三、Channel(FileChannel可通过FileInputStream 或FileOutputStream的getChannel()方法获得通道)
 Channel类似于传统的流对象，但是有以下区别：
 1.Channel可以直接将指定文件的部分或全部直接映射成Buffer。
 2.程序不能直接访问Buffer，必须通过Buffer与其交互。

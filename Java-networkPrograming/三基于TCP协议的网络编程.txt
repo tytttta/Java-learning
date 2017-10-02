@@ -20,7 +20,7 @@ port：指定端口号； backlog:用来改变连接队列长度的参数； localAddr:多个ip地址的情
 本机地址的IP地址，和默认系统动态分配的端口；
 2.Socket(InetAddress/String remoteAddress, int port, InetAddress localAddr, int localPort)：指定本地IP 地址和本地端口，适用于本地主机有多个IP的情形。
 
-Socket对象输入输出流：
+Socket对象输入输出流：（针对数据链路）
 1.InputStream  getInputStream():让程序通过该输入流从socket中取出数据。（socket--->数据链路）
 2.OutputStream getOutputStream():让程序通过该输出流向Socket中输出数据。（数据链路--->socket）
 
